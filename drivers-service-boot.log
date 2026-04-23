@@ -1,0 +1,87 @@
+Starting a Gradle Daemon, 2 busy and 1 incompatible Daemons could not be reused, use --status for details
+> Task :drivers-service:compileJava UP-TO-DATE
+> Task :drivers-service:processResources UP-TO-DATE
+> Task :drivers-service:classes UP-TO-DATE
+> Task :drivers-service:resolveMainClassName UP-TO-DATE
+
+> Task :drivers-service:bootRun
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.2)
+
+2026-04-23T14:22:19.032-04:00  INFO 29400 --- [drivers-service] [  restartedMain] c.c.f.drivers.DriversServiceApplication  : Starting DriversServiceApplication using Java 17.0.16 with PID 29400 (C:\Users\nibal\Desktop\food-delivery-platform-microservices\drivers-service\build\classes\java\main started by nibal in C:\Users\nibal\Desktop\food-delivery-platform-microservices\drivers-service)
+2026-04-23T14:22:19.038-04:00  INFO 29400 --- [drivers-service] [  restartedMain] c.c.f.drivers.DriversServiceApplication  : The following 1 profile is active: "h2"
+2026-04-23T14:22:19.158-04:00  INFO 29400 --- [drivers-service] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-04-23T14:22:19.158-04:00  INFO 29400 --- [drivers-service] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-04-23T14:22:20.806-04:00  INFO 29400 --- [drivers-service] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-23T14:22:20.898-04:00  INFO 29400 --- [drivers-service] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 77 ms. Found 1 JPA repository interface.
+2026-04-23T14:22:22.100-04:00  INFO 29400 --- [drivers-service] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-04-23T14:22:22.122-04:00  INFO 29400 --- [drivers-service] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-23T14:22:22.123-04:00  INFO 29400 --- [drivers-service] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-04-23T14:22:22.237-04:00  INFO 29400 --- [drivers-service] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3075 ms
+2026-04-23T14:22:22.765-04:00  INFO 29400 --- [drivers-service] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-23T14:22:23.152-04:00  INFO 29400 --- [drivers-service] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:drivers-db user=SA
+2026-04-23T14:22:23.154-04:00  INFO 29400 --- [drivers-service] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-23T14:22:23.233-04:00  INFO 29400 --- [drivers-service] [  restartedMain] org.flywaydb.core.FlywayExecutor         : Database: jdbc:h2:mem:drivers-db (H2 2.4)
+2026-04-23T14:22:23.250-04:00  WARN 29400 --- [drivers-service] [  restartedMain] o.f.c.internal.database.base.Database    : Using H2 2.4.240 which is newer than the version Flyway has been verified with. The latest verified version of H2 is 2.3.232.
+2026-04-23T14:22:23.309-04:00  INFO 29400 --- [drivers-service] [  restartedMain] o.f.c.i.s.JdbcTableSchemaHistory         : Schema history table "PUBLIC"."flyway_schema_history" does not exist yet
+2026-04-23T14:22:23.312-04:00  INFO 29400 --- [drivers-service] [  restartedMain] o.f.core.internal.command.DbValidate     : Successfully validated 1 migration (execution time 00:00.026s)
+2026-04-23T14:22:23.322-04:00  INFO 29400 --- [drivers-service] [  restartedMain] org.flywaydb.core.Flyway                 : All configured schemas are empty; baseline operation skipped. A baseline or migration script with a lower version than the baseline version may execute if available. Check the Schemas parameter if this is not intended.
+2026-04-23T14:22:23.325-04:00  INFO 29400 --- [drivers-service] [  restartedMain] o.f.c.i.s.JdbcTableSchemaHistory         : Creating Schema History table "PUBLIC"."flyway_schema_history" ...
+2026-04-23T14:22:23.396-04:00  INFO 29400 --- [drivers-service] [  restartedMain] o.f.core.internal.command.DbMigrate      : Current version of schema "PUBLIC": << Empty Schema >>
+2026-04-23T14:22:23.413-04:00  INFO 29400 --- [drivers-service] [  restartedMain] o.f.core.internal.command.DbMigrate      : Migrating schema "PUBLIC" to version "1 - init"
+2026-04-23T14:22:23.447-04:00  INFO 29400 --- [drivers-service] [  restartedMain] o.f.core.internal.command.DbMigrate      : Successfully applied 1 migration to schema "PUBLIC", now at version v1 (execution time 00:00.008s)
+2026-04-23T14:22:23.571-04:00  INFO 29400 --- [drivers-service] [  restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-04-23T14:22:23.685-04:00  INFO 29400 --- [drivers-service] [  restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-04-23T14:22:24.669-04:00  INFO 29400 --- [drivers-service] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-23T14:22:24.765-04:00  WARN 29400 --- [drivers-service] [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-23T14:22:24.798-04:00  INFO 29400 --- [drivers-service] [  restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:drivers-db]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: DRIVERS-DB/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-04-23T14:22:26.294-04:00  INFO 29400 --- [drivers-service] [  restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-23T14:22:26.361-04:00  INFO 29400 --- [drivers-service] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-23T14:22:26.500-04:00  INFO 29400 --- [drivers-service] [  restartedMain] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-23T14:22:26.931-04:00  WARN 29400 --- [drivers-service] [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-23T14:22:27.634-04:00  INFO 29400 --- [drivers-service] [  restartedMain] o.s.b.h.a.H2ConsoleAutoConfiguration     : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:drivers-db'
+2026-04-23T14:22:27.730-04:00  WARN 29400 --- [drivers-service] [  restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2026-04-23T14:22:27.733-04:00  INFO 29400 --- [drivers-service] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-23T14:22:27.739-04:00  WARN 29400 --- [drivers-service] [  restartedMain] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: La base de données est déjà fermée (pour désactiver la fermeture automatique à l'arrêt de la VM, ajoutez "; DB_CLOSE_ON_EXIT = FALSE" à l'URL db)
+Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-240]
+2026-04-23T14:22:27.740-04:00  INFO 29400 --- [drivers-service] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-04-23T14:22:27.741-04:00  INFO 29400 --- [drivers-service] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-04-23T14:22:27.756-04:00  INFO 29400 --- [drivers-service] [  restartedMain] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-04-23T14:22:27.776-04:00 ERROR 29400 --- [drivers-service] [  restartedMain] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8081 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8081 or configure this application to listen on another port.
+
+
+BUILD SUCCESSFUL in 36s
+4 actionable tasks: 1 executed, 3 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.4.1/userguide/configuration_cache_enabling.html
