@@ -1,8 +1,8 @@
 package com.champsoft.fooddelivery.orders.infrastructure.acl;
 
-import com.champsoft.fooddeliveryplatform.modules.drivers.application.service.DriverCrudService;
-import com.champsoft.fooddeliveryplatform.modules.drivers.domain.model.Driver;
-import com.champsoft.fooddeliveryplatform.modules.orders.application.port.out.DriverAssignmentPort;
+import com.champsoft.fooddelivery.drivers.application.service.DriverCrudService;
+import com.champsoft.fooddelivery.drivers.domain.model.Driver;
+import com.champsoft.fooddelivery.orders.application.port.out.DriverAssignmentPort;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;

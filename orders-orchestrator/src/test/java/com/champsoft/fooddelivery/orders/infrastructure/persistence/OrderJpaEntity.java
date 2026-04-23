@@ -1,6 +1,6 @@
 package com.champsoft.fooddelivery.orders.infrastructure.persistence;
 
-import com.champsoft.fooddeliveryplatform.modules.orders.domain.model.OrderStatus;
+import com.champsoft.fooddelivery.orders.domain.model.OrderStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

@@ -1,8 +1,8 @@
 package com.champsoft.fooddelivery.orders.infrastructure.acl;
 
-import com.champsoft.fooddeliveryplatform.modules.orders.application.port.out.RestaurantLookupPort;
-import com.champsoft.fooddeliveryplatform.modules.restaurants.application.service.RestaurantCrudService;
-import com.champsoft.fooddeliveryplatform.modules.restaurants.domain.model.Restaurant;
+import com.champsoft.fooddelivery.orders.application.port.out.RestaurantLookupPort;
+import com.champsoft.fooddelivery.restaurants.application.service.RestaurantCrudService;
+import com.champsoft.fooddelivery.restaurants.domain.model.Restaurant;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

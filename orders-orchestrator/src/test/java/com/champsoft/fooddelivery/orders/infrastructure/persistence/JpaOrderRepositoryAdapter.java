@@ -1,10 +1,10 @@
 package com.champsoft.fooddelivery.orders.infrastructure.persistence;
 
-import com.champsoft.fooddeliveryplatform.modules.orders.application.port.out.OrderRepositoryPort;
-import com.champsoft.fooddeliveryplatform.modules.orders.domain.model.DeliveryAddress;
-import com.champsoft.fooddeliveryplatform.modules.orders.domain.model.Order;
-import com.champsoft.fooddeliveryplatform.modules.orders.domain.model.OrderItem;
-import com.champsoft.fooddeliveryplatform.modules.orders.domain.model.PaymentInfo;
+import com.champsoft.fooddelivery.orders.application.port.out.OrderRepositoryPort;
+import com.champsoft.fooddelivery.orders.domain.model.DeliveryAddress;
+import com.champsoft.fooddelivery.orders.domain.model.Order;
+import com.champsoft.fooddelivery.orders.domain.model.OrderItem;
+import com.champsoft.fooddelivery.orders.domain.model.PaymentInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
