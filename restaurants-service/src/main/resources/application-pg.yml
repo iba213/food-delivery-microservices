@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:restaurants_db}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:orders_db}
     username: ${POSTGRES_USER:vrms}
     password: ${POSTGRES_PASSWORD:vrms}
 
