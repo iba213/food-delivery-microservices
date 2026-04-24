@@ -1,0 +1,138 @@
+version: '3.8'
+
+services:
+  # Databases
+  customers-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: customers_db
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d customers_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  drivers-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: drivers_db
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d drivers_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  restaurants-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: restaurants_db
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d restaurants_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  orders-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: orders_db
+    ports:
+      - "5435:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d orders_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Microservices
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=pg
+    depends_on:
+      - customers-service
+      - drivers-service
+      - restaurants-service
+      - orders-orchestrator
+
+  customers-service:
+    build:
+      context: ./customers-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=pg
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://customers-db:5432/customers_db
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+    depends_on:
+      customers-db:
+        condition: service_healthy
+
+  drivers-service:
+    build:
+      context: ./drivers-service
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=pg
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://drivers-db:5432/drivers_db
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+    depends_on:
+      drivers-db:
+        condition: service_healthy
+
+  restaurants-service:
+    build:
+      context: ./restaurants-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=pg
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://restaurants-db:5432/restaurants_db
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+    depends_on:
+      restaurants-db:
+        condition: service_healthy
+
+  orders-orchestrator:
+    build:
+      context: ./orders-orchestrator
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=pg
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://orders-db:5432/orders_db
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+      - APP_SERVICES_CUSTOMER_URL=http://customers-service:8082
+      - APP_SERVICES_RESTAURANT_URL=http://restaurants-service:8083
+      - APP_SERVICES_DRIVER_URL=http://drivers-service:8084
+    depends_on:
+      orders-db:
+        condition: service_healthy
+      customers-service:
+        condition: service_started
+      restaurants-service:
+        condition: service_started
+      drivers-service:
+        condition: service_started

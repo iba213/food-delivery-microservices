@@ -1,6 +1,8 @@
 spring:
   application:
     name: orders-orchestrator
+  profiles:
+    active: h2
 
   jpa:
     hibernate:
@@ -16,7 +18,16 @@ spring:
     baseline-on-migrate: true
 
 server:
-  port: 8084
+  port: 8081
+
+app:
+  services:
+    customer:
+      url: ${APP_SERVICES_CUSTOMER_URL:http://localhost:8082}
+    restaurant:
+      url: ${APP_SERVICES_RESTAURANT_URL:http://localhost:8083}
+    driver:
+      url: ${APP_SERVICES_DRIVER_URL:http://localhost:8084}
 
 springdoc:
   api-docs:
