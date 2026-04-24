@@ -1,184 +1,300 @@
 {
   "info": {
-    "_postman_id": "0c5d77ef-7f7e-4d82-8fe1-9e6a4dca1001",
-    "name": "Food Delivery Platform",
+    "_postman_id": "872b4b78-aeb2-4550-8ec0-09fe56d214e8",
+    "name": "Food Delivery Platform - Service Tests",
+    "description": "Teacher-style collection for the implemented services. IDs are stored in collection variables. This targets services directly because the current gateway module does not expose routing yet.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.collectionVariables.set('runId', String(Date.now()));"
+        ]
+      }
+    }
+  ],
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:8080" },
-    { "key": "customerId", "value": "11111111-1111-1111-1111-111111111111" },
-    { "key": "restaurantId", "value": "33333333-3333-3333-3333-333333333333" },
-    { "key": "driverId", "value": "55555555-5555-5555-5555-555555555551" },
-    { "key": "customerCrudId", "value": "11111111-1111-1111-1111-111111111111" },
-    { "key": "restaurantCrudId", "value": "33333333-3333-3333-3333-333333333333" },
-    { "key": "driverCrudId", "value": "55555555-5555-5555-5555-555555555551" },
-    { "key": "orderId", "value": "66666666-6666-6666-6666-666666666666" },
+    { "key": "customersBaseUrl", "value": "http://localhost:8082" },
+    { "key": "restaurantsBaseUrl", "value": "http://localhost:8083" },
+    { "key": "driversBaseUrl", "value": "http://localhost:8084" },
+    { "key": "ordersBaseUrl", "value": "http://localhost:8081" },
+    { "key": "missingId", "value": "00000000-0000-0000-0000-000000000000" },
+    { "key": "seedCustomerId", "value": "11111111-1111-1111-1111-111111111111" },
+    { "key": "seedRestaurantId", "value": "33333333-3333-3333-3333-333333333333" },
+    { "key": "seedDriverId", "value": "55555555-5555-5555-5555-555555555551" },
+    { "key": "seedOrderId", "value": "66666666-6666-6666-6666-666666666666" },
     { "key": "pizzaMenuItemId", "value": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1" },
-    { "key": "veggieMenuItemId", "value": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa2" }
+    { "key": "veggieMenuItemId", "value": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa2" },
+    { "key": "customerCrudId", "value": "" },
+    { "key": "restaurantCrudId", "value": "" },
+    { "key": "driverCrudId", "value": "" },
+    { "key": "orderCrudId", "value": "" }
   ],
   "item": [
     {
-      "name": "Customers",
+      "name": "Customers Service",
       "item": [
-        { "name": "GET All Customers", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/customers" } },
-        { "name": "GET Customer By Id", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/customers/{{customerId}}" } },
         {
-          "name": "POST Create Customer",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 201 || pm.response.code === 200) {","  const body = pm.response.json();","  if (body.id) pm.collectionVariables.set('customerCrudId', body.id);","}"] } }],
+          "name": "List Customers",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(Array.isArray(pm.response.json())).to.eql(true);"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{customersBaseUrl}}/api/customers" }
+        },
+        {
+          "name": "Get Customer By Seed Id",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('seedCustomerId'));"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{customersBaseUrl}}/api/customers/{{seedCustomerId}}" }
+        },
+        {
+          "name": "Create Customer",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.expect([200,201]).to.include(pm.response.code);","const j=pm.response.json();","pm.expect(j.id).to.be.ok;","pm.collectionVariables.set('customerCrudId', j.id);"] } }],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Nina Parker\",\n  \"email\": \"nina.parker@example.com\",\n  \"phone\": \"514-555-3001\",\n  \"street\": \"12 Oak Street\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H3A1A1\"\n}" },
-            "url": "{{baseUrl}}/api/customers"
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Customer {{runId}}\",\n  \"email\": \"customer{{runId}}@example.com\",\n  \"phone\": \"514555{{runId}}\",\n  \"street\": \"12 Oak Street\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H3A1A1\"\n}" },
+            "url": "{{customersBaseUrl}}/api/customers"
           }
         },
         {
-          "name": "PUT Update Created Customer",
+          "name": "Create Customer - Invalid Email (400)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(400);"] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Bad Customer\",\n  \"email\": \"bad-email\",\n  \"phone\": \"5145550000\",\n  \"street\": \"1 Test St\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H1H1H1\"\n}" },
+            "url": "{{customersBaseUrl}}/api/customers"
+          }
+        },
+        {
+          "name": "Create Customer - Duplicate Email (409)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(409);"] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Duplicate Alice\",\n  \"email\": \"alice@example.com\",\n  \"phone\": \"5145550000\",\n  \"street\": \"1 Test St\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H1H1H1\"\n}" },
+            "url": "{{customersBaseUrl}}/api/customers"
+          }
+        },
+        {
+          "name": "Update Created Customer",
+          "event": [
+            { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('customerCrudId')) throw new Error('Run Create Customer first.');"] } },
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(pm.response.json().name).to.include('Updated');"] } }
+          ],
           "request": {
             "method": "PUT",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Nina Parker Updated\",\n  \"email\": \"nina.parker.updated@example.com\",\n  \"phone\": \"514-555-9999\",\n  \"street\": \"500 Updated Street\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H2H2H2\"\n}" },
-            "url": "{{baseUrl}}/api/customers/{{customerCrudId}}"
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Customer {{runId}} Updated\",\n  \"email\": \"customer{{runId}}.updated@example.com\",\n  \"phone\": \"5145559999\",\n  \"street\": \"500 Updated Street\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H2H2H2\"\n}" },
+            "url": "{{customersBaseUrl}}/api/customers/{{customerCrudId}}"
           }
         },
-        { "name": "DELETE Created Customer", "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/api/customers/{{customerCrudId}}" } }
+        {
+          "name": "Get Customer - Not Found (404)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(404);"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{customersBaseUrl}}/api/customers/{{missingId}}" }
+        },
+        {
+          "name": "Delete Created Customer",
+          "event": [
+            { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('customerCrudId')) throw new Error('Run Create Customer first.');"] } },
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(204);"] } }
+          ],
+          "request": { "method": "DELETE", "header": [], "url": "{{customersBaseUrl}}/api/customers/{{customerCrudId}}" }
+        }
       ]
     },
     {
-      "name": "Restaurants",
+      "name": "Restaurants Service",
       "item": [
-        { "name": "GET All Restaurants", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/restaurants" } },
-        { "name": "GET Restaurant By Id", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/restaurants/{{restaurantId}}" } },
         {
-          "name": "POST Create Restaurant",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 201 || pm.response.code === 200) {","  const body = pm.response.json();","  if (body.id) pm.collectionVariables.set('restaurantCrudId', body.id);","}"] } }],
+          "name": "List Restaurants",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(Array.isArray(pm.response.json())).to.eql(true);"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{restaurantsBaseUrl}}/api/restaurants" }
+        },
+        {
+          "name": "Get Restaurant By Seed Id",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","const j=pm.response.json();","pm.expect(j.id).to.eql(pm.collectionVariables.get('seedRestaurantId'));","pm.expect(j.menuItems.length).to.be.greaterThan(0);"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{restaurantsBaseUrl}}/api/restaurants/{{seedRestaurantId}}" }
+        },
+        {
+          "name": "Create Restaurant",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.expect([200,201]).to.include(pm.response.code);","const j=pm.response.json();","pm.expect(j.id).to.be.ok;","pm.collectionVariables.set('restaurantCrudId', j.id);"] } }],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Sushi Hub\",\n  \"street\": \"25 River Road\",\n  \"city\": \"Longueuil\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"J4K1B2\",\n  \"open\": true,\n  \"menuItems\": [\n    {\n      \"name\": \"Salmon Roll\",\n      \"price\": 12.50,\n      \"available\": true\n    },\n    {\n      \"name\": \"Tuna Roll\",\n      \"price\": 13.75,\n      \"available\": true\n    }\n  ]\n}" },
-            "url": "{{baseUrl}}/api/restaurants"
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Sushi Hub {{runId}}\",\n  \"street\": \"25 River Road\",\n  \"city\": \"Longueuil\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"J4K1B2\",\n  \"open\": true,\n  \"menuItems\": [\n    { \"name\": \"Salmon Roll {{runId}}\", \"price\": 12.50, \"available\": true },\n    { \"name\": \"Tuna Roll {{runId}}\", \"price\": 13.75, \"available\": true }\n  ]\n}" },
+            "url": "{{restaurantsBaseUrl}}/api/restaurants"
           }
         },
         {
-          "name": "PUT Update Created Restaurant",
+          "name": "Create Restaurant - Empty Menu (400)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(400);"] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Empty Menu Place\",\n  \"street\": \"1 Test St\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H1H1H1\",\n  \"open\": true,\n  \"menuItems\": []\n}" },
+            "url": "{{restaurantsBaseUrl}}/api/restaurants"
+          }
+        },
+        {
+          "name": "Update Created Restaurant",
+          "event": [
+            { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('restaurantCrudId')) throw new Error('Run Create Restaurant first.');"] } },
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(pm.response.json().name).to.include('Updated');"] } }
+          ],
           "request": {
             "method": "PUT",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Sushi Hub Updated\",\n  \"street\": \"25 River Road\",\n  \"city\": \"Longueuil\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"J4K1B2\",\n  \"open\": true,\n  \"menuItems\": [\n    {\n      \"name\": \"Salmon Roll Updated\",\n      \"price\": 12.50,\n      \"available\": true\n    },\n    {\n      \"name\": \"Tuna Roll Updated\",\n      \"price\": 13.75,\n      \"available\": true\n    }\n  ]\n}" },
-            "url": "{{baseUrl}}/api/restaurants/{{restaurantCrudId}}"
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Sushi Hub {{runId}} Updated\",\n  \"street\": \"25 River Road\",\n  \"city\": \"Longueuil\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"J4K1B2\",\n  \"open\": true,\n  \"menuItems\": [\n    { \"name\": \"Salmon Roll {{runId}} Updated\", \"price\": 12.50, \"available\": true },\n    { \"name\": \"Tuna Roll {{runId}} Updated\", \"price\": 13.75, \"available\": true }\n  ]\n}" },
+            "url": "{{restaurantsBaseUrl}}/api/restaurants/{{restaurantCrudId}}"
           }
         },
-        { "name": "DELETE Created Restaurant", "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/api/restaurants/{{restaurantCrudId}}" } }
+        {
+          "name": "Get Restaurant - Not Found (404)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(404);"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{restaurantsBaseUrl}}/api/restaurants/{{missingId}}" }
+        },
+        {
+          "name": "Delete Created Restaurant",
+          "event": [
+            { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('restaurantCrudId')) throw new Error('Run Create Restaurant first.');"] } },
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(204);"] } }
+          ],
+          "request": { "method": "DELETE", "header": [], "url": "{{restaurantsBaseUrl}}/api/restaurants/{{restaurantCrudId}}" }
+        }
       ]
     },
     {
-      "name": "Drivers",
+      "name": "Drivers Service",
       "item": [
-        { "name": "GET All Drivers", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/drivers" } },
-        { "name": "GET Driver By Id", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/drivers/{{driverId}}" } },
         {
-          "name": "POST Create Driver",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 201 || pm.response.code === 200) {","  const body = pm.response.json();","  if (body.id) pm.collectionVariables.set('driverCrudId', body.id);","}"] } }],
+          "name": "List Drivers",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(Array.isArray(pm.response.json())).to.eql(true);"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{driversBaseUrl}}/api/drivers" }
+        },
+        {
+          "name": "Get Driver By Seed Id",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('seedDriverId'));"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{driversBaseUrl}}/api/drivers/{{seedDriverId}}" }
+        },
+        {
+          "name": "Create Driver",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.expect([200,201]).to.include(pm.response.code);","const j=pm.response.json();","pm.expect(j.id).to.be.ok;","pm.collectionVariables.set('driverCrudId', j.id);"] } }],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Maya Delivery\",\n  \"phone\": \"514-555-4001\",\n  \"status\": \"AVAILABLE\"\n}" },
-            "url": "{{baseUrl}}/api/drivers"
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Driver {{runId}}\",\n  \"phone\": \"514666{{runId}}\",\n  \"status\": \"AVAILABLE\"\n}" },
+            "url": "{{driversBaseUrl}}/api/drivers"
           }
         },
         {
-          "name": "PUT Update Created Driver",
+          "name": "Create Driver - Missing Status (400)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(400);"] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Driver Missing Status\",\n  \"phone\": \"5145550000\"\n}" },
+            "url": "{{driversBaseUrl}}/api/drivers"
+          }
+        },
+        {
+          "name": "Update Created Driver",
+          "event": [
+            { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('driverCrudId')) throw new Error('Run Create Driver first.');"] } },
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(pm.response.json().name).to.include('Updated');"] } }
+          ],
           "request": {
             "method": "PUT",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Maya Delivery Updated\",\n  \"phone\": \"514-555-8888\",\n  \"status\": \"AVAILABLE\"\n}" },
-            "url": "{{baseUrl}}/api/drivers/{{driverCrudId}}"
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Driver {{runId}} Updated\",\n  \"phone\": \"5148880000\",\n  \"status\": \"AVAILABLE\"\n}" },
+            "url": "{{driversBaseUrl}}/api/drivers/{{driverCrudId}}"
           }
         },
-        { "name": "DELETE Created Driver", "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/api/drivers/{{driverCrudId}}" } }
+        {
+          "name": "Get Driver - Not Found (404)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(404);"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{driversBaseUrl}}/api/drivers/{{missingId}}" }
+        },
+        {
+          "name": "Delete Created Driver",
+          "event": [
+            { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('driverCrudId')) throw new Error('Run Create Driver first.');"] } },
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(204);"] } }
+          ],
+          "request": { "method": "DELETE", "header": [], "url": "{{driversBaseUrl}}/api/drivers/{{driverCrudId}}" }
+        }
       ]
     },
     {
-      "name": "Orders",
+      "name": "Orders Service",
       "item": [
-        { "name": "GET All Orders", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/orders" } },
-        { "name": "GET Order By Id", "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/orders/{{orderId}}" } },
         {
-          "name": "POST Create Order",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["if (pm.response.code === 201 || pm.response.code === 200) {","  const body = pm.response.json();","  if (body.id) pm.collectionVariables.set('orderId', body.id);","}"] } }],
+          "name": "List Orders",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(Array.isArray(pm.response.json())).to.eql(true);"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{ordersBaseUrl}}/api/orders" }
+        },
+        {
+          "name": "Get Order By Seed Id",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('seedOrderId'));"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{ordersBaseUrl}}/api/orders/{{seedOrderId}}" }
+        },
+        {
+          "name": "Create Order",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.expect([200,201]).to.include(pm.response.code);","const j=pm.response.json();","const id=j.id || (j.data && j.data.id);","pm.expect(id).to.be.ok;","pm.collectionVariables.set('orderCrudId', id);"] } }],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"restaurantId\": \"{{restaurantId}}\",\n  \"street\": \"123 Maple St\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H1A1A1\",\n  \"paymentMethod\": \"VISA\",\n  \"paymentLastFourDigits\": \"4242\",\n  \"items\": [\n    {\n      \"menuItemId\": \"{{pizzaMenuItemId}}\",\n      \"quantity\": 2\n    },\n    {\n      \"menuItemId\": \"{{veggieMenuItemId}}\",\n      \"quantity\": 1\n    }\n  ]\n}" },
-            "url": "{{baseUrl}}/api/orders"
+            "body": { "mode": "raw", "raw": "{\n  \"customerId\": \"{{seedCustomerId}}\",\n  \"restaurantId\": \"{{seedRestaurantId}}\",\n  \"street\": \"123 Maple St\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H1A1A1\",\n  \"paymentMethod\": \"VISA\",\n  \"paymentLastFourDigits\": \"4242\",\n  \"items\": [\n    { \"menuItemId\": \"{{pizzaMenuItemId}}\", \"quantity\": 2 },\n    { \"menuItemId\": \"{{veggieMenuItemId}}\", \"quantity\": 1 }\n  ]\n}" },
+            "url": "{{ordersBaseUrl}}/api/orders"
           }
         },
         {
-          "name": "PUT Update Order",
+          "name": "Create Order - Validation Error (400)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(400);"] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"customerId\": \"{{seedCustomerId}}\",\n  \"restaurantId\": \"{{seedRestaurantId}}\",\n  \"street\": \"\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H1A1A1\",\n  \"paymentMethod\": \"VISA\",\n  \"paymentLastFourDigits\": \"4242\",\n  \"items\": []\n}" },
+            "url": "{{ordersBaseUrl}}/api/orders"
+          }
+        },
+        {
+          "name": "Create Order - Invalid Menu Item (409/500)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.expect([409,500]).to.include(pm.response.code);"] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"customerId\": \"{{seedCustomerId}}\",\n  \"restaurantId\": \"{{seedRestaurantId}}\",\n  \"street\": \"123 Maple St\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H1A1A1\",\n  \"paymentMethod\": \"VISA\",\n  \"paymentLastFourDigits\": \"4242\",\n  \"items\": [\n    { \"menuItemId\": \"{{missingId}}\", \"quantity\": 1 }\n  ]\n}" },
+            "url": "{{ordersBaseUrl}}/api/orders"
+          }
+        },
+        {
+          "name": "Update Created Order",
+          "event": [
+            { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('orderCrudId')) throw new Error('Run Create Order first.');"] } },
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(pm.response.json().paymentMethod).to.eql('MASTERCARD');"] } }
+          ],
           "request": {
             "method": "PUT",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"street\": \"900 Updated Ave\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H4H4H4\",\n  \"paymentMethod\": \"MASTERCARD\",\n  \"paymentLastFourDigits\": \"1111\",\n  \"items\": [\n    {\n      \"menuItemId\": \"{{pizzaMenuItemId}}\",\n      \"quantity\": 1\n    }\n  ]\n}" },
-            "url": "{{baseUrl}}/api/orders/{{orderId}}"
-          }
-        },
-        { "name": "DELETE Order", "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/api/orders/{{orderId}}" } }
-      ]
-    },
-    {
-      "name": "Failure Requests",
-      "item": [
-        {
-          "name": "Customer Duplicate Email",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Duplicate Alice\",\n  \"email\": \"alice@example.com\",\n  \"phone\": \"514-555-0000\",\n  \"street\": \"1 Test St\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H1H1H1\"\n}" },
-            "url": "{{baseUrl}}/api/customers"
+            "body": { "mode": "raw", "raw": "{\n  \"street\": \"900 Updated Ave\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H4H4H4\",\n  \"paymentMethod\": \"MASTERCARD\",\n  \"paymentLastFourDigits\": \"1111\",\n  \"items\": [\n    { \"menuItemId\": \"{{pizzaMenuItemId}}\", \"quantity\": 1 }\n  ]\n}" },
+            "url": "{{ordersBaseUrl}}/api/orders/{{orderCrudId}}"
           }
         },
         {
-          "name": "Customer Not Found",
-          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/customers/00000000-0000-0000-0000-000000000001" }
+          "name": "Get Order - Not Found (404)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(404);"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{ordersBaseUrl}}/api/orders/{{missingId}}" }
         },
         {
-          "name": "Restaurant Not Found",
-          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/restaurants/00000000-0000-0000-0000-000000000002" }
-        },
-        {
-          "name": "Restaurant Conflict Closed Or Invalid Menu",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"restaurantId\": \"{{restaurantId}}\",\n  \"street\": \"123 Maple St\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H1A1A1\",\n  \"paymentMethod\": \"VISA\",\n  \"paymentLastFourDigits\": \"4242\",\n  \"items\": [\n    {\n      \"menuItemId\": \"00000000-0000-0000-0000-000000000000\",\n      \"quantity\": 1\n    }\n  ]\n}" },
-            "url": "{{baseUrl}}/api/orders"
-          }
-        },
-        {
-          "name": "Driver Not Found",
-          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/drivers/00000000-0000-0000-0000-000000000003" }
-        },
-        {
-          "name": "Order Not Found",
-          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/orders/00000000-0000-0000-0000-000000000004" }
-        },
-        {
-          "name": "Order Validation Error",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"restaurantId\": \"{{restaurantId}}\",\n  \"street\": \"\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H1A1A1\",\n  \"paymentMethod\": \"VISA\",\n  \"paymentLastFourDigits\": \"4242\",\n  \"items\": []\n}" },
-            "url": "{{baseUrl}}/api/orders"
-          }
-        },
-        {
-          "name": "Order Conflict Invalid Menu Item",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"restaurantId\": \"{{restaurantId}}\",\n  \"street\": \"123 Maple St\",\n  \"city\": \"Montreal\",\n  \"province\": \"Quebec\",\n  \"postalCode\": \"H1A1A1\",\n  \"paymentMethod\": \"VISA\",\n  \"paymentLastFourDigits\": \"4242\",\n  \"items\": [\n    {\n      \"menuItemId\": \"00000000-0000-0000-0000-000000000000\",\n      \"quantity\": 1\n    }\n  ]\n}" },
-            "url": "{{baseUrl}}/api/orders"
-          }
+          "name": "Delete Created Order",
+          "event": [
+            { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('orderCrudId')) throw new Error('Run Create Order first.');"] } },
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(204);"] } }
+          ],
+          "request": { "method": "DELETE", "header": [], "url": "{{ordersBaseUrl}}/api/orders/{{orderCrudId}}" }
         }
       ]
     }
