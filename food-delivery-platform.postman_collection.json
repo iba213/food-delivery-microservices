@@ -39,17 +39,17 @@
       "item": [
         {
           "name": "List Customers",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(Array.isArray(pm.response.json())).to.eql(true);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200', function () { pm.response.to.have.status(200); });","pm.test('Response is an array', function () { pm.expect(Array.isArray(pm.response.json())).to.eql(true); });"] } }],
           "request": { "method": "GET", "header": [], "url": "{{customersBaseUrl}}/api/customers" }
         },
         {
           "name": "Get Customer By Seed Id",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('seedCustomerId'));"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200', function () { pm.response.to.have.status(200); });","pm.test('Returned seeded customer id', function () { pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('seedCustomerId')); });"] } }],
           "request": { "method": "GET", "header": [], "url": "{{customersBaseUrl}}/api/customers/{{seedCustomerId}}" }
         },
         {
           "name": "Create Customer",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.expect([200,201]).to.include(pm.response.code);","const j=pm.response.json();","pm.expect(j.id).to.be.ok;","pm.collectionVariables.set('customerCrudId', j.id);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200 or 201', function () { pm.expect([200,201]).to.include(pm.response.code); });","const j=pm.response.json();","pm.test('Created customer has an id', function () { pm.expect(j.id).to.be.ok; });","pm.collectionVariables.set('customerCrudId', j.id);"] } }],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -59,7 +59,7 @@
         },
         {
           "name": "Create Customer - Invalid Email (400)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(400);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 400', function () { pm.response.to.have.status(400); });"] } }],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -69,7 +69,7 @@
         },
         {
           "name": "Create Customer - Duplicate Email (409)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(409);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 409', function () { pm.response.to.have.status(409); });"] } }],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -81,7 +81,7 @@
           "name": "Update Created Customer",
           "event": [
             { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('customerCrudId')) throw new Error('Run Create Customer first.');"] } },
-            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(pm.response.json().name).to.include('Updated');"] } }
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200', function () { pm.response.to.have.status(200); });","pm.test('Customer name is updated', function () { pm.expect(pm.response.json().name).to.include('Updated'); });"] } }
           ],
           "request": {
             "method": "PUT",
@@ -92,14 +92,14 @@
         },
         {
           "name": "Get Customer - Not Found (404)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(404);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 404', function () { pm.response.to.have.status(404); });"] } }],
           "request": { "method": "GET", "header": [], "url": "{{customersBaseUrl}}/api/customers/{{missingId}}" }
         },
         {
           "name": "Delete Created Customer",
           "event": [
             { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('customerCrudId')) throw new Error('Run Create Customer first.');"] } },
-            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(204);"] } }
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 204', function () { pm.response.to.have.status(204); });"] } }
           ],
           "request": { "method": "DELETE", "header": [], "url": "{{customersBaseUrl}}/api/customers/{{customerCrudId}}" }
         }
@@ -110,17 +110,17 @@
       "item": [
         {
           "name": "List Restaurants",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(Array.isArray(pm.response.json())).to.eql(true);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200', function () { pm.response.to.have.status(200); });","pm.test('Response is an array', function () { pm.expect(Array.isArray(pm.response.json())).to.eql(true); });"] } }],
           "request": { "method": "GET", "header": [], "url": "{{restaurantsBaseUrl}}/api/restaurants" }
         },
         {
           "name": "Get Restaurant By Seed Id",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","const j=pm.response.json();","pm.expect(j.id).to.eql(pm.collectionVariables.get('seedRestaurantId'));","pm.expect(j.menuItems.length).to.be.greaterThan(0);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200', function () { pm.response.to.have.status(200); });","const j=pm.response.json();","pm.test('Returned seeded restaurant id', function () { pm.expect(j.id).to.eql(pm.collectionVariables.get('seedRestaurantId')); });","pm.test('Restaurant has menu items', function () { pm.expect(j.menuItems.length).to.be.greaterThan(0); });"] } }],
           "request": { "method": "GET", "header": [], "url": "{{restaurantsBaseUrl}}/api/restaurants/{{seedRestaurantId}}" }
         },
         {
           "name": "Create Restaurant",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.expect([200,201]).to.include(pm.response.code);","const j=pm.response.json();","pm.expect(j.id).to.be.ok;","pm.collectionVariables.set('restaurantCrudId', j.id);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200 or 201', function () { pm.expect([200,201]).to.include(pm.response.code); });","const j=pm.response.json();","pm.test('Created restaurant has an id', function () { pm.expect(j.id).to.be.ok; });","pm.collectionVariables.set('restaurantCrudId', j.id);"] } }],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -130,7 +130,7 @@
         },
         {
           "name": "Create Restaurant - Empty Menu (400)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(400);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 400', function () { pm.response.to.have.status(400); });"] } }],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -142,7 +142,7 @@
           "name": "Update Created Restaurant",
           "event": [
             { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('restaurantCrudId')) throw new Error('Run Create Restaurant first.');"] } },
-            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(pm.response.json().name).to.include('Updated');"] } }
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200', function () { pm.response.to.have.status(200); });","pm.test('Restaurant name is updated', function () { pm.expect(pm.response.json().name).to.include('Updated'); });"] } }
           ],
           "request": {
             "method": "PUT",
@@ -153,14 +153,14 @@
         },
         {
           "name": "Get Restaurant - Not Found (404)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(404);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 404', function () { pm.response.to.have.status(404); });"] } }],
           "request": { "method": "GET", "header": [], "url": "{{restaurantsBaseUrl}}/api/restaurants/{{missingId}}" }
         },
         {
           "name": "Delete Created Restaurant",
           "event": [
             { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('restaurantCrudId')) throw new Error('Run Create Restaurant first.');"] } },
-            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(204);"] } }
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 204', function () { pm.response.to.have.status(204); });"] } }
           ],
           "request": { "method": "DELETE", "header": [], "url": "{{restaurantsBaseUrl}}/api/restaurants/{{restaurantCrudId}}" }
         }
@@ -171,17 +171,17 @@
       "item": [
         {
           "name": "List Drivers",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(Array.isArray(pm.response.json())).to.eql(true);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200', function () { pm.response.to.have.status(200); });","pm.test('Response is an array', function () { pm.expect(Array.isArray(pm.response.json())).to.eql(true); });"] } }],
           "request": { "method": "GET", "header": [], "url": "{{driversBaseUrl}}/api/drivers" }
         },
         {
           "name": "Get Driver By Seed Id",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('seedDriverId'));"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200', function () { pm.response.to.have.status(200); });","pm.test('Returned seeded driver id', function () { pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('seedDriverId')); });"] } }],
           "request": { "method": "GET", "header": [], "url": "{{driversBaseUrl}}/api/drivers/{{seedDriverId}}" }
         },
         {
           "name": "Create Driver",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.expect([200,201]).to.include(pm.response.code);","const j=pm.response.json();","pm.expect(j.id).to.be.ok;","pm.collectionVariables.set('driverCrudId', j.id);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200 or 201', function () { pm.expect([200,201]).to.include(pm.response.code); });","const j=pm.response.json();","pm.test('Created driver has an id', function () { pm.expect(j.id).to.be.ok; });","pm.collectionVariables.set('driverCrudId', j.id);"] } }],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -191,7 +191,7 @@
         },
         {
           "name": "Create Driver - Missing Status (400)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(400);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 400', function () { pm.response.to.have.status(400); });"] } }],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -203,7 +203,7 @@
           "name": "Update Created Driver",
           "event": [
             { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('driverCrudId')) throw new Error('Run Create Driver first.');"] } },
-            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(pm.response.json().name).to.include('Updated');"] } }
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200', function () { pm.response.to.have.status(200); });","pm.test('Driver name is updated', function () { pm.expect(pm.response.json().name).to.include('Updated'); });"] } }
           ],
           "request": {
             "method": "PUT",
@@ -214,14 +214,14 @@
         },
         {
           "name": "Get Driver - Not Found (404)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(404);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 404', function () { pm.response.to.have.status(404); });"] } }],
           "request": { "method": "GET", "header": [], "url": "{{driversBaseUrl}}/api/drivers/{{missingId}}" }
         },
         {
           "name": "Delete Created Driver",
           "event": [
             { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('driverCrudId')) throw new Error('Run Create Driver first.');"] } },
-            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(204);"] } }
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 204', function () { pm.response.to.have.status(204); });"] } }
           ],
           "request": { "method": "DELETE", "header": [], "url": "{{driversBaseUrl}}/api/drivers/{{driverCrudId}}" }
         }
@@ -232,17 +232,17 @@
       "item": [
         {
           "name": "List Orders",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(Array.isArray(pm.response.json())).to.eql(true);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200', function () { pm.response.to.have.status(200); });","pm.test('Response is an array', function () { pm.expect(Array.isArray(pm.response.json())).to.eql(true); });"] } }],
           "request": { "method": "GET", "header": [], "url": "{{ordersBaseUrl}}/api/orders" }
         },
         {
           "name": "Get Order By Seed Id",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('seedOrderId'));"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200', function () { pm.response.to.have.status(200); });","pm.test('Returned seeded order id', function () { pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('seedOrderId')); });"] } }],
           "request": { "method": "GET", "header": [], "url": "{{ordersBaseUrl}}/api/orders/{{seedOrderId}}" }
         },
         {
           "name": "Create Order",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.expect([200,201]).to.include(pm.response.code);","const j=pm.response.json();","const id=j.id || (j.data && j.data.id);","pm.expect(id).to.be.ok;","pm.collectionVariables.set('orderCrudId', id);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200 or 201', function () { pm.expect([200,201]).to.include(pm.response.code); });","const j=pm.response.json();","const id=j.id || (j.data && j.data.id);","pm.test('Created order has an id', function () { pm.expect(id).to.be.ok; });","pm.collectionVariables.set('orderCrudId', id);"] } }],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -252,7 +252,7 @@
         },
         {
           "name": "Create Order - Validation Error (400)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(400);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 400', function () { pm.response.to.have.status(400); });"] } }],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -262,7 +262,7 @@
         },
         {
           "name": "Create Order - Invalid Menu Item (409/500)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.expect([409,500]).to.include(pm.response.code);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 409 or 500', function () { pm.expect([409,500]).to.include(pm.response.code); });"] } }],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -274,7 +274,7 @@
           "name": "Update Created Order",
           "event": [
             { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('orderCrudId')) throw new Error('Run Create Order first.');"] } },
-            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);","pm.expect(pm.response.json().paymentMethod).to.eql('MASTERCARD');"] } }
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 200', function () { pm.response.to.have.status(200); });","pm.test('Payment method is updated', function () { pm.expect(pm.response.json().paymentMethod).to.eql('MASTERCARD'); });"] } }
           ],
           "request": {
             "method": "PUT",
@@ -285,14 +285,14 @@
         },
         {
           "name": "Get Order - Not Found (404)",
-          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(404);"] } }],
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 404', function () { pm.response.to.have.status(404); });"] } }],
           "request": { "method": "GET", "header": [], "url": "{{ordersBaseUrl}}/api/orders/{{missingId}}" }
         },
         {
           "name": "Delete Created Order",
           "event": [
             { "listen": "prerequest", "script": { "type": "text/javascript", "exec": ["if (!pm.collectionVariables.get('orderCrudId')) throw new Error('Run Create Order first.');"] } },
-            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(204);"] } }
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status is 204', function () { pm.response.to.have.status(204); });"] } }
           ],
           "request": { "method": "DELETE", "header": [], "url": "{{ordersBaseUrl}}/api/orders/{{orderCrudId}}" }
         }

@@ -16,7 +16,7 @@ spring:
     baseline-on-migrate: true
 
 server:
-  port: 8085
+  port: 8084
 
 springdoc:
   api-docs:
